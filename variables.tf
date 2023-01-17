@@ -18,4 +18,5 @@ variable "user_name" {
 
 variable "aws_region" {
   default = "eu-north-1"
+  description = "region for generated .env file"
 }
