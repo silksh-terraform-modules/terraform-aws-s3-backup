@@ -20,3 +20,23 @@ variable "aws_region" {
   default = "eu-north-1"
   description = "region for generated .env file"
 }
+
+variable expiration_days {
+  default     = 30
+}
+
+variable transition_days {
+  default     = 7
+  description = "transition days"
+}
+
+variable storage_class {
+  default     = "STANDARD_IA"
+  description = "S3 storage class"
+}
+
+variable disable_versioning {
+  type        = bool
+  default     = false
+  description = "whether use versioning or no"
+}

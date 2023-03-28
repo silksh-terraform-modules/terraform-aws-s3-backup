@@ -13,20 +13,34 @@ resource "aws_s3_bucket_versioning" "s3_backup" {
 
 resource "aws_s3_bucket_lifecycle_configuration" "s3_backup" {
   bucket = aws_s3_bucket.s3_backup.bucket
-  # rule {
-  #   filter {}
-  #   status = "Enabled"
-  #   expiration {
-  #     days = var.expiration_days
-  #   }
-  # }
-  rule {
-    id = "expiration"
-    status = "Enabled"
-    filter {}
-    noncurrent_version_expiration {
-      noncurrent_days = var.noncurrent_days
-      newer_noncurrent_versions = var.newer_noncurrent_versions
+
+  dynamic "rule" {
+    for_each = var.disable_versioning ? [1] : []
+    content {
+      id = "expiration"
+      filter {}
+      status = "Enabled"
+      expiration {
+        days = var.expiration_days
+      }
+
+      transition {
+        days  = var.transition_days
+        storage_class = var.storage_class
+      }
+    }
+  }
+
+  dynamic "rule" {
+    for_each = var.disable_versioning ? [] : [1]
+    content {
+      id = "expiration"
+      status = "Enabled"
+      filter {}
+      noncurrent_version_expiration {
+        noncurrent_days = var.noncurrent_days
+        newer_noncurrent_versions = var.newer_noncurrent_versions
+      }
     }
   }
 }
